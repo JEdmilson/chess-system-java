@@ -23,7 +23,7 @@ public class UI {
 		if (piece==null) {
 			System.out.print("-");
 		}else {
-			System.out.print(piece);
+			System.out.print(piece);//ainda nao foi immplementado o to String do piece
 		}
 		System.out.print(" ");
 	}
