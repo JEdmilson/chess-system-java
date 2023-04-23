@@ -25,6 +25,14 @@ public class Program {
 				System.out.print("Source: ");
 				ChessPosition source=UI.ChessPosition(sc);
 				
+				//imprimir possiveis moviemntos da peca de origem:
+				boolean [][] possibleMoves=chessMatch.possibleMoves(source);
+				UI.clearScreen();
+				UI.printBoard(chessMatch.getPieces(),possibleMoves );
+				//para executar o metódo acima deve-se criar uma sobrecarga do metodo, 
+				//recebendo os possiveis movimentos e colorindo-os
+				
+				
 				System.out.println();
 				System.out.print("Target: ");
 				ChessPosition target=UI.ChessPosition(sc);
