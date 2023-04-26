@@ -1,6 +1,8 @@
 package application;
 
+import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 import chess.ChessException;
@@ -16,11 +18,12 @@ public class Program {
 		//System.out.println("Hello ");
 		Scanner sc=new Scanner(System.in);
 		ChessMatch chessMatch=new ChessMatch();
+		List<ChessPiece> captured =new ArrayList<>();
 		
 		while(true) {
 			try {
 				UI.clearScreen();
-				UI.printMatch(chessMatch);
+				UI.printMatch(chessMatch, captured);
 				System.out.println();
 				System.out.print("Source: ");
 				ChessPosition source=UI.ChessPosition(sc);
@@ -38,6 +41,10 @@ public class Program {
 				ChessPosition target=UI.ChessPosition(sc);
 				
 				ChessPiece capturedPiece=chessMatch.perfomChessMove(source,target);
+				
+				if(capturedPiece!=null) {
+					captured.add(capturedPiece);
+				}
 			
 			}
 			catch (ChessException e) {
