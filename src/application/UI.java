@@ -69,6 +69,12 @@ public class UI {
 		System.out.println("Jodada n: "+chessMatch.getTurn());
 		System.out.println("Esperando jogador: "+chessMatch.getCurrentPlayer());
 		
+		//verificar se estah em check
+		if(chessMatch.getCheck()) {
+			System.out.println("CHECK!");
+			
+		}
+		
 	}
 	
 	

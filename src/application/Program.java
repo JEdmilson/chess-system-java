@@ -14,7 +14,10 @@ public class Program {
 
 	public static void main(String[] args) {
 		//by ED
-		// TODO Auto-generated method stub
+		//Possiveis erros encontrados: 
+		//1) ao jogar uma situacao invalida não deve mudar o jogador
+		
+		
 		//System.out.println("Hello ");
 		Scanner sc=new Scanner(System.in);
 		ChessMatch chessMatch=new ChessMatch();

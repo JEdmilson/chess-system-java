@@ -2,6 +2,7 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import boardgame.Board;
 import boardgame.Piece;
@@ -13,8 +14,12 @@ public class ChessMatch {
 	private int turn;
 	private Color currentPlayer;
 	private Board board;
+	private boolean check;//por defaul eh inicializado com false
+	
 	private List<Piece> piecesOnTheBoard=new ArrayList<>();
 	private List<Piece> capturedPieces=new ArrayList<>();
+		//inicailmente a lista era do tipo ChessPiece mudou para Piece para nao ter que fazer downacast, ficou mais generico
+	//a inicializacao das listas acima poderia ser feito no construtor porem o prof acha melhor aqui fora mesmo
 	
 
 	public ChessMatch() {
@@ -31,6 +36,10 @@ public class ChessMatch {
 	public Color getCurrentPlayer() {
 		return currentPlayer;
 		
+	}
+	
+	public boolean getCheck() {
+		return check;
 	}
 
 	public ChessPiece[][] getPieces() {
@@ -56,6 +65,16 @@ public class ChessMatch {
 		validateSourcePosition(source);
 		validateTargetPosition(source,target);
 		Piece capturedPiece=makeMove(source,target);
+
+		//verificar se a jogada atula nao deixou o proprio rei em check
+		if(testCheck(currentPlayer)) {
+			undoMove(source, target, capturedPiece);
+			throw new ChessException("Voce nao pode se colocar em check");
+		}
+		
+		//verificar se estah em check
+		check=(testCheck(opponent(currentPlayer)))? true:false;
+		
 		nextTurn();		
 		return (ChessPiece) capturedPiece;
 		
@@ -74,6 +93,17 @@ public class ChessMatch {
 		}
 		
 		return capturedPiece;
+	}
+	
+	private void undoMove(Position source,Position target, Piece capturedPiece) {
+		Piece p=board.removePiece(target);
+		board.placePiece(p,source);
+		if(capturedPiece!=null) {
+			board.placePiece(capturedPiece, target);
+			capturedPieces.remove(capturedPiece);
+			piecesOnTheBoard.add(capturedPiece);
+			
+		}
 	}
 
 	private void validateSourcePosition(Position position) {
@@ -107,6 +137,42 @@ public class ChessMatch {
 		currentPlayer=(currentPlayer==Color.WHITE)? Color.BLACK:Color.WHITE;
 		// operador ternario   condição? valor se for verdareiro : valor se for falso
 	}
+	
+	private Color opponent(Color color) {
+		return (color==Color.WHITE)? Color.BLACK:Color.WHITE;
+	}
+	
+	private ChessPiece king(Color color) {
+		List<Piece> list=piecesOnTheBoard.stream().filter(x->((ChessPiece)x).getColor()==color).collect(Collectors.toList());
+		for(Piece p:list) {
+			if(p instanceof King) {
+				return (ChessPiece)p;
+			}
+		}
+		throw new IllegalStateException("Não existe o rei da "+color+"no tabuleiro.");
+		
+	}
+	
+	private boolean testCheck(Color color) {
+		Position kingPosition =king(color).getChessPosition().toPosition();
+		//a seguir temo a filtragem da lista de pecas do opponete de color
+		List<Piece> opponentPieces=piecesOnTheBoard.stream().filter(x->((ChessPiece)x).getColor()==opponent(color)).collect(Collectors.toList());
+		//varrer todas as possiveis jogadas de todas as pecas do opnente para verificar se estah em check
+		for(Piece p:opponentPieces) {
+			boolean[][] mat=p.possibleMoves();
+			//se o elemento da matriz onde o rei se encontra for verdaeiro significa que o rei está em check!
+			if(mat[kingPosition.getRow()][kingPosition.getCol()]) {
+				return true;				
+			}
+			
+		}
+		//se esgotar o for e não houver return significa que o rei noa esta em check
+		return false;
+		
+		
+		
+	}
+	
 
 	private void placeNewPiece(char col, int row, ChessPiece piece) {
 		board.placePiece(piece, new ChessPosition(col, row).toPosition());
