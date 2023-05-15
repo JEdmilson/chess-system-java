@@ -96,6 +96,33 @@ public class King extends ChessPiece{
 				Position p2=new Position(position.getRow(), position.getCol()+2);
 				if(getBoard().piece(p1)==null && getBoard().piece(p2)==null) {
 					//falta verificar se as posicoes que passariam o rei estariam em check!
+					// uma forma seria mover o rei e verificar se estaria em check
+					/*
+					Position sourceT=new Position(source.getRow(), source.getCol());
+					Position targetT=new Position(source.getRow(), source.getCol()+1);
+					ChessPiece king=(ChessPiece)board.removePiece(sourceT);
+					board.placePiece(rook,targetT);
+					
+					if (testCheck(getColor)){
+					//nao eh possivel fazer o roque
+					
+					variavel de controle=false
+					 
+					}
+					defazer o movimento
+					king=(ChessPiece)board.removePiece(targetT);
+					board.placePiece(rook,sourceT);
+					
+					
+					
+					mesma logica acima pra +2
+					if(!controle){
+						mat -> true;
+					
+					}
+					
+					 */
+					
 					mat[position.getRow()][position.getCol()+2]=true;			
 					
 				}
